@@ -21,8 +21,13 @@ import CoreGraphics
     @objc optional func progressBar(_ progressBar: FlexibleSteppedProgressBar,
                               canSelectItemAtIndex index: Int) -> Bool
     
-    @objc optional func progressBar(_ progressBar: FlexibleSteppedProgressBar,
-                              textAtIndex index: Int, position: FlexibleSteppedProgressBarTextLocation) -> String
+//     @objc optional func progressBar(_ progressBar: FlexibleSteppedProgressBar,
+//                               textAtIndex index: Int, position: FlexibleSteppedProgressBarTextLocation) -> String
+    
+        @objc optional func progressBar(_ progressBar: FlexibleSteppedProgressBar, textAtIndex index: Int, position: FlexibleSteppedProgressBarTextLocation) -> String
+
+     @objc optional func progressBar(_ progressBar: FlexibleSteppedProgressBar, selectedTextAtIndex index: Int, position: FlexibleSteppedProgressBarTextLocation) -> UIImage?
+
     
 }
 
@@ -67,6 +72,8 @@ import CoreGraphics
     @objc open var lastStateCenterColor: UIColor!
     @objc open var centerLayerTextColor: UIColor!
     @objc open var centerLayerDarkBackgroundTextColor: UIColor = UIColor.white
+    @objc open var currentSelectedCenterTextColor: UIColor! = UIColor.black
+
     
     @objc open var useLastState: Bool = false {
         didSet {
@@ -473,7 +480,10 @@ import CoreGraphics
             } else {
                 textLayer.string = "\(i)"
             }
-            
+             if let image = self.delegate?.progressBar?(self, selectedTextAtIndex: i, position: .center), i < currentIndex {
+                 textLayer.contents = image.cgImage
+                 textLayer.contentsGravity = kCAGravityResizeAspect
+             }
             textLayer.sizeWidthToFit()
             
             if isRTL {
@@ -512,7 +522,11 @@ import CoreGraphics
             } else {
                 textLayer.string = "\(i)"
             }
-            
+              if let image = self.delegate?.progressBar?(self, selectedTextAtIndex: i, position: .top), i < currentIndex {
+                 textLayer.contents = image.cgImage
+                 textLayer.contentsGravity = kCAGravityResizeAspect
+             }
+
             textLayer.sizeWidthToFit()
             
             if isRTL {
@@ -545,7 +559,10 @@ import CoreGraphics
             } else {
                 textLayer.string = "\(i)"
             }
-            
+               if let image = self.delegate?.progressBar?(self, selectedTextAtIndex: i, position: .bottom), i < currentIndex {
+                 textLayer.contents = image.cgImage
+                 textLayer.contentsGravity = kCAGravityResizeAspect
+             }
             textLayer.sizeWidthToFit()
                         if isRTL {
                textLayer.setAffineTransform(CGAffineTransform(scaleX: -1, y: 1))
